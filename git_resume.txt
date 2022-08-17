@@ -6,5 +6,10 @@
 -> git config --global user.name "USERNAME"
 -> git config --global user.email "EMAIL"
 
+// We do it inside the project
 -> git init
--> 
+-> git add .
+-> git commit -m "first commit"
+-> git remote add origin https://github.com/rootChristian/linux_resume.git
+-> git branch -M master
+-> git push -u origin master
