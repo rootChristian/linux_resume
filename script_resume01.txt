@@ -1,0 +1,387 @@
+//************************ SCRIPT ***********************//
+
+- chmod +x 'file_name.ksh' // 'file_name.ps' // 'file_name.bash' // 'file_name.sh' 
+- ./file_name
+
+*****************************************************
+************************KSH************************** 
+*****************************************************
+
+#!/usr/bin/ksh 
+echo "KSH est un superbe langage !!" # Afficher une information 
+-----------------------------------
+>>KSH est un superbe langage !!
+
+************
+#!/usr/bin/ksh 
+#Création de variables en KSH 
+varl=lO 
+var2=20 
+echo "La valeur de varl est $varl et la valeur de var2 est $var2." 
+------------------------------------------------------------------
+>>La valeur de varl est 10 et la valeur de var2 est 20. 
+
+++++++++++++++++++++++++++++++++++
+• $0 indique le nom d'une commande. 
+• $# indique le nombre de paramètres positionnels d'une commande. 
+• $$ indique le numéro de processus du shell courant. 
+• $? indique un résultat lié au déroulement de la dernière commande exécutée. En principe, si la commande a été exécutée sans erreurs, alors le résultat devrait être O. Dans le cas coNntraire, la variable renverra une valeur autre (comme 1). 
+• $* contient l'ensemble des paramètres (au moins une valeur) d'une commande. Si cette variable est délimitée par des guillemets, la valeur retournée est unique, mais composite. 
+• $@ contient l'ensemble des paramètres d'une commande. Sa signification est donc identique à $*. Si elle est délimitée par des guillemets, elle permet de séparer chaque argument en tant qu'élément distinct. 
+• $1 à $9 représentent des paramètres positionnels. 
+• PATH représente les différents chemins où se trouvent les exécutables. 
+• PS1 affiche la structure du prompt principal, ou celui par défaut. 
+• HOME contient le répertoire de base de l'utilisateur. 
+• SHELL indique le shell utilisé par l'utilisateur. 
+• LANG indique la langue utilisée. 
+• TEMP contient le chemin où les processus stockent les fichiers temporaires. 
+• OSTYPE indique le type de système d'exploitation. 
+• LD_LIBRARY_PATH contient les différents chemins où se trouvent les bibliothèques. 
+• USER indique l'utilisateur connecté à la session courante. 
+• EDITOR indique l'éditeur utilisé par défaut au sein de la session courante. 
+• MANPATH contient l'ensemble des répertoires où se situent les fichiers MAN. 
+• HISTFILE indique le nom du fichier contenant l'historique des commandes enregistrées. 
+• HISTSIZE est une valeur limitant le nombre de commandes enregistrées dans le fichier historique. 
+• PWD contient le chemin du répertoire actuel. 
++++++++++++++++++++++++++++++++++++
+
+************Les opérateurs logiques, de comparaison, d'affectation
+ET: &&   
+OU: ||   
+Égal: == (concerne les chaînes de caractères); es: "string" == "strings" 
+Non égal: != (concerne les chaînes de caractères); es: "string" != "strings" 
+
+Vrai si deux valeurs sont égales: -eq (comparaison numérique); es: [ [5 -eq 7]] 
+Supérieur: -gt  (comparaison numérique); es: [ [7 -gt 5] 
+Supérieur ou égal: -ge (comparaison numérique); es: [ [10 -ge 5]] 
+Inférieur: -lt (comparaison numérique); es: [ [13 -1 t 5]] 
+Inférieur ou égal: -1e  (comparaison numérique); es: [ [23 -1 e 19]] 
+Différent de: -ne  (comparaison numérique); es: [ [19 -ne 777]]
+
+Incrémente une valeur d'une unité: ++ ; es: print $((var++)) $var 
+Décrémente une valeur d'une unité: --  ; es: print $((var--)) $var
+Multiplie une valeur par une autre: *= ; es: print $((var*=3)) 
+
+//Operateur sur des fichier
+Vrai si le fichier est exécutable: -x ;  es: [[-x /bin/ls]] 
+Vrai si le fichier est accessible en lecture: - r ; es:  [[-r /etc/shadow]
+Vrai si le fichier est un répertoire: -d  ; es: [[-d / etc]] 
+Vrai si le fichier a une taille non nulle: - s ; es: [[-s /tmp/logs.txt]] 
+Vrai si le fichier existe: -e ; es:  [[-e /tmp/logs.txt]] 
+Vrai si le fichier est un lien symbolique: - h ; es:  [[-h /misc/symlink]] 
+Vrai si le fichier est accessible en écriture: -w  ; es: [[-w /etc/passwd]] 
+Vrai si le sticky bit est actif: -k  ; es: [[-k /misc/inventory]]
+
+Envoie le flux de sortie à un fichier: > ; es: ps > processes.txt 
+Ajoute du contenu à un fichier déjà existant. Crée le fichier s'il n'existe pas: >> ; es: ps -ax >> file.txt 
+Lit l'entrée standard à partir d'un fichier: < ; es: grep word < logs.txt 
+Redirige le flux d'erreurs vers un fichier: 2> ; es: ps 2> errors.txt 
+Redirige et ajoute le flux d'erreurs vers un fichier existant. Crée le fichier s'il n'existe pas: 2>> ; es: ps 2>> errors.txt 
+
+************
+
+
+
+*****************************************************
+************************PERL*************************
+*****************************************************
+
+#!/usr/bin/perl 
+use strict; 
+use warnings; 
+print "Perl est un superbe langage!!\ n"; # Afficher une information
+----------------------------------------
+>>Perl est un superbe langage !! 
+
+************
+#!/ usr/ bin/perl 
+use strict; 
+use wa rnings; 
+my $a = 5; 
+my $b = 10; 
+my $result $a +$b; 
+=begin 
+Première ligne .. 
+Deuxième ligne .. 
+Troisième ligne .. 
+=end 
+=cut 
+print "Le résultat de l'opération est -> $result.\n";
+---------------------------------------------------
+>>Le résultat de l'opération est -> 15. 
+
+************Les variables scalaires 
+$a = 20; # Entier 
+$b "Perl"; # Chaîne de caractères 
+$c 013; # Octal 
+$d Ox7A; # Hexadécimal 
+$e 20.7; # Réel 
+print "a -> $a\n"; 
+print "b -> $b\n"; 
+print "c -> $c\n"; 
+print "d -> $d\n"; 
+print "e -> $e\n"; 
+-----------------
+>>a -> 20 
+>>b -> Perl 
+>>C -> 11 
+>>d -> 122 
+>>e -> 20.7 
+
+************Les variables tableaux
+# Variable tableau en Perl 
+@Tableau= ("Perl","Python" ,"Lisp",17,23); 
+# Obtenir le premier élément de la variable tableau 
+print($Tableau[OJ ,"\ n"); 
+# Obtenir le quatrième élément de la variable tableau 
+print($Tableau[3]); 
+------------------
+»Perl 
+» 17
+
+************Les variables dictionnaires 
+# Variable dictionnaire en Perl 
+%Dict = ( 'SRVl' => ' 10.0.2 .17' , 'SRV2' => '10.0.2.22 ', 'SRV3 ' => '10.0.2.25'); 
+# Premier élément de la variable dictionnaire 
+print("Premier élément de l a variable dictionnaire-> ", $Dict{'SRVl'}, "\n"); 
+# Deuxième élément de la variable dictionnaire 
+print("Deuxième élément de la variable dictionnaire -> ", $Dict{'SRV2'}, "\n");
+# Troisième élément de la variable dictionnaire 
+print("Troisième élément de la variable dictionnaire -> ", $Dict{'SRV3'}, "\n"); 
+--------------------------
+>>Premier élément de l a variable dictionnaire -> 10.0.2.17 
+>>Deuxième élément de la variable dictionnaire -> 10.0.2.22 
+>>Troisième élément de la variable dictionnaire-> 10.0.2.25
+
+************Les variables spéciales 
+• $_ représente en quelque sorte la valeur courante correspondant à une entrée standard. 
+Elle est très utilisée dans le cadre de manipulation de collections d'objets ou de fonctions. 
+• @_ est une variable tableau contenant l'ensemble des arguments d'une fonction. 
+• @ARGV contient l'ensemble des arguments d'un script. 
+• %ENV est une variable dictionnaire contenant les variables d'environnement du shell. 
+• @INC contient l'ensemble des répertoires où se trouvent les bibliothèques.
+
+
+*******************************************************
+************************PYTHON*************************
+*******************************************************
+#!/usr/bin/python 
+# Déclaration de variables
+a,b = 0 ,1 
+if a < b: # Instruction conditionnelle ) 
+print("This is true .. a is less than b.") 
+else : 
+print("This is not true .. a is not less than b.") 
+-------------------------------------------------
+>>This is true . . a is less than b. 
+
+************
+#!/usr/bin/python 
+'''  
+Commenter un bloc de lignes 
+est possible avec Python 
+''' 
+a,b = 0,1 
+if a < b: 
+print("This is true .. ais less than b.") 
+else: 
+print("This is not true .. a is not less than b.") 
+------------------------------------------------
+>>This is true .. a is less than b. 
+
+************
+a 50 
+b 250 
+print("La valeur de a est -> a) 
+print(" La valeur de b est-> b) 
+------------------------------
+>>La valeur de a est -> 50 
+>>La valeur de b est-> 250
+ 
+************Les références
+x=12
+b=x
+print(x) 
+print (b)
+--------
+» 19 
+» 19 
+
+ 
+ 
+*******************************************************
+*******************WINDOWS POWERSHELL******************
+*******************************************************
+
+$a = 2; 
+$b = 4; 
+$result =($a+ $b); 
+# Afficher l e résultat 
+Write-Host "The result is -> $result." 
+-------------------------------------
+>>The result is -> 6. 
+ 
+************
+<# 
+Cette ligne de commande 
+permet d'interroger WMI 
+afi n d'avoir plus d'informations 
+sur le processeur de la machine locale. 
+#> 
+Get-WmiObject -Class Win32_Processor -ComputerName 'localhost' 
+------------------------------------------------------------
+»Capti on 
+»Devi ceID 
+»Manufacturer 
+»MaxCl ockSpeed 
+>>Name 
+>>SocketDesignation 
+Intel 64 Family 6 Model 58 Stepping 9 
+CPUO 
+Genuinelntel 
+2401 
+Intel(R) Core(TM) i7-3630QM CPU@ 2.40GHz 
+SOCKET 0
+
+************Créer une variable 
+PS> $num = 5 
+PS> $string = 'PowerShell' 
+PS> $services= (Get-Service) 
+PS> $num.GetType() 
+-------------------------
+>>lsPublic 	IsSerial 	Name 	    BaseType 
+>>--------  --------    ----        --------
+>>True 		True 		Int32 	    System.ValueType 
+
+PS> $string.GetType() 
+-------------------------
+>>lsPublic 	IsSerial 	Name 	    BaseType 
+>>--------  --------    ----        --------
+>>True 		True 		String  	System.Object 
+
+PS> $services.GetType() 
+-------------------------
+>>lsPublic 	IsSerial 	Name 	    BaseType 
+>>--------  --------    ----        --------
+>>True 		True 		Object[] 	System.Array
+
+************Les variables automatiques
+• $_ contient l'objet d'entrée en provenance du pipeline. 
+• $$ contient le dernier jeton de la dernière ligne de commande au cours d'une session Windows PowerShell. 
+• $? contient une valeur de sortie indiquant l'état d'exécution de la dernière ligne de 
+commande: $True si l'opération s'est bien passée et $False dans le cas contraire. 
+• $^ contient le premier jeton de la dernière ligne de commande au cours d'une session 
+Windows PowerShell. 
+• $Error est une variable tableau contenant l'ensemble des erreurs rencontrées au cours 
+d'une session particulière. 
+• $Matches contient les chaînes de correspondance lorsque les opérateurs -match et -notmatch 
+sont invoqués. 
+• $Profile indique les chemins d'accès des profils Windows PowerShell de l'utilisateur ainsi 
+que de l'application PowerShell. 
+• $PSHome contient le chemin d'accès au répertoire d'installation de Windows PowerShell. 
+• $Host donne accès aux propriétés de l'hôte Windows PowerShell. 
+• $True contient la valeur true. 
+• $False contient la valeur false.
+
+************Les variables d'environnement
+PS> (Get-Childltem env :).Name 
+------------------------------
+ALLUSERSPROFILE 
+APPDATA 
+CommonProgramFil es 
+CommonProgramFi les(x86)
+CommonProgramW6432 
+COMPUTERNAME 
+ComSpec 
+configsetroot 
+FP_NO_HOST_CHECK 
+HOMEDRIVE 
+HOMEPATH 
+LOCALAPPDATA 
+LOGONSERVER 
+NUMBER_OF_PROCESSORS 
+os 
+Path 
+PATHEXT 
+PROCESSOR_ARCHITECTURE 
+PROCESSOR_IDENTIFIER 
+PROCESSOR_LEVEL 
+PROCESSOR_REVISION 
+ProgramData 
+ProgramFiles 
+ProgramFiles(x86) 
+ProgramW6432 
+PSModulePath 
+PUBLIC 
+SAL_ACCESSIBILITY_ENABLED 
+SESSIONNAME 
+SystemDri ve 
+SystemRoot 
+TEMP 
+TMP 
+USERDOMAIN 
+USERDOMAIN_ROAMINGPROFI LE 
+USERNAME 
+USERPROFILE 
+VBOX_INSTALL_PATH 
+Windir
+
+************Les variables de préférence 
+• $ErrorActionPreference fournit un certain nombre de réponses aux erreurs ne nécessitant 
+pas l'arrêt de l'exécution du pipeline. 
+• $WarningPreference répond aux messages d'avertissement pouvant survenir lors de l'exécution d'une commande. 
+• $DebugPreference répond aux messages de débogage pouvant survenir lors de l'exécution 
+d'une commande quelconque. 
+• $ErrorVi ew structure le format d'affichage des erreurs. 
+• $Confi rmPreference détermine la façon dont Windows PowerShell demande confirmation 
+avant l'exécution d'une commande. 
+• $Maxi mumA li asCount indique le nombre d'alias autorisés lors d'une session Windows 
+PowerShell. 
+• $MaximumErrorCount indique le nombre d'erreurs enregistrées dans l'historique. 
+• $PSEmai l Server spécifie le serveur de messagerie utilisé pour l'envoi des messages électroniques. 
+• $VerbosePreference indique comment PowerShell doit répondre aux messages commentés 
+d'une commande. 
+• $0FS indique le caractère de séparation des éléments d'un tableau lorsque ce dernier est 
+transtypé en chaîne de caractères.
+
+************Les opérateurs logiques, de comparaison, de fractionnement et de jointure 
+ET: -and  ; es: (2 -eq 3) -and (12 -ne 25)  
+OU: -or  ; es: (2 -eq 3) -or (12 -ne 25) 
+NON: -not ; es: -not (6 -eq 7) 
+
+Égal à: -eq ; es: 7 -eq 7 
+Supérieur à: -gt ; es: 7 -gt 5
+Supérieur ou égal à: -ge ; es: 10 -ge 5
+Inférieur à: -lt ; es: 13 -1 t 5
+Inférieur ou égal à: -1e  ; es: 23 -1 e 19
+Différent de: -ne ; es: 19 -ne 777
+Établit une correspondance à l'aide du caractère générique *.: -like ; es:  'powershell' -like ' *shell' 
+Inverse de l'opérateur -1ike.: -notlike ; es:  'powershell' -notlike ''~Basic'
+Établit une correspondance à l'aide des expressions régulières: -match ; es:  'powershell' -match 'A\w' 
+Inverse de l'opérateur -match.: -notmatch ; es: 'powershell' -notmatch 'A\d' 
+Vérifie si une valeur se trouve dans une collection.: -in ; es: 'yellow' -in 'red', 'green', 'blue' 
+Inverse de l'opérateur -in.: -notin ; es: 'yellow' -notin 'red', 'green', 'blue' 
+Remplace une valeur par une autre.: -replace ; es: 'MonadShell' - replace 'Monad', 'Power' 
+
+Incrémente une valeur par une autre.: ++ ; es: $c += 3
+Décrémente une valeur par une autre.: --  ; es: $c -= 3
+Divise une valeur par une autre. : /= ; es: $c /= 3 
+
+Vérifie que le type spécifié est bien celui correspondant à l'objet d'entrée.: -is ; es:  5 -is [int] 
+Inverse de l'opérateur -is.: -isnot ; es: 5 -isnot [string]  
+Convertit l'objet d'entrée vers le type spécifié.: -as ; es: "05/04/1998" -as [datetime]
+
+Envoie le flux de sortie à un fichier.: > ; es:  Get-Service > services.txt 
+Ajoute du contenu à un fichier déjà existant. Crée le fichier s'il n'existe pas.: >>  ; es: Get-Service | Sort-Object
+Redirige le flux d'erreurs vers un fichier.: 2> ; es: Get-Process -Name 'NotHere' 2> errors. txt
+Redirige et ajoute le flux d'erreurs vers un fichier existant. Crée le fichier s'il n'existe pas: 2>> ; es: Get-Process -Name 'NotHere' 2>> errors.txt 
+
+Fractionne des chaînes en sous-chaînes.: -split ; es: -split 'Windows Powe rShell' 
+Combine des sous-chaînes en une seule.: -join ; es: -join ('Windows ',' PowerShell')
+
+
+
+Les fonctions et commandes natives pages:65 **************************
+
+
+

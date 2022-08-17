@@ -1,0 +1,64 @@
+******************************************************
+*********************HTTPD && SSL*********************
+******************************************************
+-> yum update -y
+
+-> hostnamectl set-hostname chagest.local
+-> hostname
+-> vi /etc/hosts
+ > 127.0.0.1 localhost localhost.localdomain localhost4 localhost4.localdomain4
+ > 192.168.159.158 chagest.local chagest
+
+//install httpd and ssl ***** https://youtu.be/VCy23odB0-U
+-> yum install httpd mod_ssl firewalld
+-> systemctl status httpd.service
+-> systemctl start httpd.service
+-> systemctl enable httpd.service
+-> firewall-cmd --add-service=http --zone=public --permanent
+-> firewall-cmd --add-service=https --zone=public --permanent
+-> firewall-cmd --reload
+-> setenforce 0
+-> vi /var/www/html/index.html
+ > TESTING...
+-> chmod 777 /var/www/html/index.html
+
+//configuration httpd
+-> ls-l /etc/httpd/conf.d
+-> cp /etc/httpd/conf.d/ssl.conf /opt/
+
+-> openssl req -new > certificate.csr	(generate the private certificate)
+-> openssl rsa -in privkey.pem -out keyfile.key  (generate the key file)
+-> openssl x509 -in certificate.csr -out cert.cert -req -signkey keyfile.key -days 365	(generate the certificate with x509 certificate)
+
+-> mkdir -p /etc/pki/tls/private/
+-> mkdir -p /etc/pki/tls/certs/
+-> cp cert.cert /etc/pki/tls/certs/cert.crt
+-> cp keyfile.key /etc/pki/tls/private/server.key
+
+-> vi /etc/httpd/conf.d/ssl.conf
+   <VirtualHost *:443>
+   	ServerAdmin root@localhost
+   	ServerName chagest.local
+   	DocumentRoot /var/www/html
+   	SSLEngine on
+   	SSLProtocol all -SSLv2 -SSLv3
+   	SSLCipherSuite HIGH:MEDIUM:!aNULL:!MD5
+   	SSLHonorCipherOrder on
+   	SSLCertificateFile /etc/pki/tls/certs/cert.crt
+   	SSLCertificateKeyFile /etc/pki/tls/private/server.key
+   	#SSLCertificateChainFile /etc/pki/tls/certs/certificate.csr
+   </VirtualHost>
+
+###-> vi /etc/httpd/conf/httpd.conf
+    > ServerRoot "/etc/httpd"
+    > Listen 192.168.159.158:80
+    > ServerAdmin root@localhost
+    > DocumentRoot "/var/www/html"
+###-> systemctl restart httpd
+
+-> systemctl restart httpd
+-> httpd -t
+
+-> systemctl stop httpd
+
+-> ps -ef | grep httpd

@@ -1,0 +1,537 @@
+******************************************************
+***********************SCRIPT*************************
+******************************************************
+//install visual studio code
+
+-> sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc
+-> vi  /etc/yum.repos.d/vscode.repo
+ > [code]
+ > name=Visual Studio Code
+ > baseurl=https://packages.microsoft.com/yumrepos/vscode
+ > enabled=1
+ > gpgcheck=1
+ > gpgkey=https://packages.microsoft.com/keys/microsoft.asc
+-> yum install -y code
+
+-> sudo code Scripts/main.sh --user-data-dir='.' --no-sandbox	(open file script main.sh with root)
+
+-> chmod u+x main.sh	(give user permission to execute)
+
+-> ./main.sh	(executed)
+
+********************************************
+#!/bin/bash
+# Create a backup
+
+readonly dir='backup'
+readonly new_file='backup.tar.bz2'
+readonly old_file='backup_old.tar.bz2'
+
+if [ -d "/$dir" ] ; then 
+    if [ ! -f "/$dir/$new_file" ] ; then touch /$dir/$new_file 
+    fi
+
+    echo -e "\nDirectory $dir and file $new_file exits!"
+    
+else 
+    mkdir /$dir && cd /$dir && touch $new_file && cd ..
+fi
+
+mv /$dir/$new_file /$dir/$old_file
+tar -jcvf /$dir/$new_file /home    # zip -r /backup/backup.zip /home
+rm -rf /$dir/$old_file
+********************************************
+
+********************************************
+#!/bin/bash
+# Create a backup
+
+create_archive_filename(){
+  day=$(date +%A)
+  hostname=$(hostname -s)
+  archive_file="$hostname-$day.tgz"
+}
+
+print_start_status_message(){
+  echo "Backing up $backup_files to $dest/$archive_file"
+  date
+}
+
+backup_files(){
+  tar czf $dest/$archive_file $backup_files 
+}
+
+print_end_status_message(){
+  echo "Backup finished"
+  date
+}
+
+main(){
+  folders_to_backup="/home /var/spool/mail /etc /root /boot /opt"
+  back_destination="/mnt/backup"
+  create_archive_filename
+  print_start_status_message
+  backup_files
+  print_end_status_message
+  # Listing of files in $dest to check file sizes
+  ls -lh $dest 
+}
+
+main
+********************************************
+
+##################################################################
+#!/bin/bash
+
+# \n (go to new line);  \t (tabulation);  \v (vertical tabulation); 
+# \f (change page);  \r (???);
+# -e: use a special charater;  -n: ignore go to line
+
+echo -e "Hello\nworld!!!" 
+##################################################################
+
+//Variables
+ readonly PI=3.14	(constant)
+ declare -r PI=3.14	(constant; r: readonly; i: numeric; a: table)
+
+ str="KEMG"
+ str1='Hi Christ $str'
+ str2="Hi Christ $str"
+ str3=`ls -al`
+
+ read -p "Enter your name: " name	(p: add prompt text)
+ read -p "Enter your password: " -s password	(s: hidden prompt text)
+ read -p "Enter your password: " -sn 5 password	(n: max charater 5) 
+ read -p "Enter your password: " -s -n 5 -t 2 password	(t: timer to enter the text 2s) 
+ echo -e "\nWelcome, $name and $password"
+
+// Parameter ($#: number of parameters; $0: execution; $1,...,$9: parameter 1 at 9; ${X}: get parameter X; $$: get pid; $*: get all params; $@: get all params)
+
+-> ./main.sh test1 test2
+ echo "${0}"
+ echo "$*: &&  $@"
+
+-> ./main.sh "test1" "test2"
+ echo "$@"
+ echo "Total params: $#; PID: $$  $0 :> $1 ---- $2"
+
+//substitution
+ current_directory=$(pwd)
+ echo $current_directory
+
+//summer
+ sum=$((5+5))   # let sum=5+5   or   let 'sum = 5 + 5'  
+ echo $sum
+
+//delete data
+ let sum=5+5
+ echo $sum
+ unset sum
+ echo $sum
+
+//set value
+ set A B C
+ echo $2
+
+//reference
+ data=result
+ result="KO!"
+ echo ${!data}
+
+//conditions
+-> ((1 < 2 ))
+-> echo $?	(return 0 if is true)
+
+-> ((1 > 2 ))
+-> echo $?	(return 1 if is false)
+
+
+
+#use for number (lt: lower than; le: lower or equal; gt: greater than; ge: greater or equal; eq: equal; ne: not equal; or: ||; and: &&)
+
+ nb1=10
+ nb2=10
+ nb3=12
+
+ if test $nb1 -lt $nb2 ; then 
+	echo 'nb1 < nb2'  
+ fi
+********
+ if [ $nb1 -lt $nb2 ]  || [ $nb1 -eq $nb2 ]; then 
+	echo 'nb1 < nb2 or nb1 = nb2'
+ elif [ $nb1 -gt $nb2 ] ; then
+	echo 'nb1 > nb2'
+ else
+	echo 'nb1 != nb2'
+ fi
+
+#use for charater ( equal: =; different: !=; z: is empty; n: is not empty; e: there is current directory; f: there is file; d: there is directory; r: disponible to read; w: disponible to write; x: disponible to execute; N: verify if have modification since the last access; s: verify if file size is not empty)
+
+ str=''
+ str1='christ'
+ str2='christ'
+
+ if [ $str1 = $str2 ] ; then 
+	echo 'EQUAL'
+ else
+	echo 'NOT EQUAL'
+ fi
+ **************************
+ if [ -z $str] ; then 
+	echo 'EMPTY'
+ else
+	echo 'NOT EMPTY'
+ fi
+ **************************
+ if [ -n $str] ; then 
+	echo 'NOT EMPTY'
+ else
+	echo 'EMPTY'
+ fi
+ **************************
+ if [ -d 'main.sh' ] ; then 
+	echo 'main.sh is directory'
+ elif [ -f 'main.sh' ] ; then
+	echo 'main.sh is file'
+ else 
+	echo 'not found!!!'
+ fi
+
+ **************************
+
+ read -p "> " cmd
+ 
+ case $cmd in
+	1) echo 'one';;
+	2) echo 'two';;
+	*) echo $cmd;;
+ esac
+
+ **************************
+ path=`pwd`
+ 
+ if [ "$path" == "/home" ]   # if [[ $path == '/home' ]]
+
+ *************************
+ 
+ while ((1)) ; do
+ 	echo 'Hi'
+	break	#continue
+ done
+ *************************
+ i=0
+
+ while ((i < 10)) ; do
+ 	echo $i
+	i=$(($i+1))  
+ done
+ *************************
+ i=0
+
+ until ((i < 10))  # i >= 10
+ do
+ 	echo $i
+	i=$(($i+1)) 
+ done
+
+ *************************
+ for arg in $@
+ do
+	echo $arg
+ done
+
+-> ./main.sh test test1 test2
+
+ *************************
+ for arg in "$@"
+ do
+	echo $arg
+ done
+
+-> ./main.sh "test" "test1 test2"
+
+ *************************
+ for ((i=0; i<10; i++))
+ do
+	echo $i
+ done
+
+-> ./main.sh "test" "test1 test2"
+
+ *************************
+
+ str='Hello World!'
+ 
+ echo ${#str}	# length of strings
+
+ *************************
+ 
+ str='Hello World!'
+ str=${#str}	# now the variable is number of character
+ 
+ echo $str
+
+ *************************
+ 
+ str='Hello World!'
+ 
+ echo ${str,}	# Change the first character to lowercase
+
+ *************************
+ 
+ str='Hello World!'
+ 
+ echo ${str,,}	# Change all characters to lowercase
+
+ *************************
+ 
+ str='Hello World!'
+ 
+ echo ${str,,[W]}	# Indicate the character to be changed to lowercase
+
+ *************************
+ 
+ str='hello World!'
+ 
+ echo ${str^}	# Change the first character to uppercase
+
+ *************************
+ 
+ str='Hello World!'
+ 
+ echo ${str^^}	# Change all characters to uppercase
+
+ *************************
+ 
+ str='Hello world!'
+ 
+ echo ${str^^[w]}	# Indicate the character to be changed to uppercase
+
+ *************************
+ 
+ str='Hello World!'
+ 
+ echo ${str:6}	# Extract all characters after sixth position
+
+ *************************
+
+ str='Hello World!'
+ 
+ echo ${str:0:5}   # Extract all characters between position zero and position six 
+
+ *************************
+
+ str='Hello World!'
+ 
+ echo ${str/l/k}   # Substitution: change the first character "l" to "k"
+
+ *************************
+
+ str='Hello World!'
+ 
+ echo ${str//l/k}   # Substitution: change all characters "l" to "k"
+
+ *************************
+
+ str='Hello World!'
+ 
+ echo ${str/#H/V}   # Substitution: change the first character "H" to "V"
+
+ *************************
+
+ str='Hello World!'
+ 
+ echo ${str/%!/.}   # Substitution: change the last character "!" to "."
+
+ *************************
+
+ str='Hello World!'
+ 
+ echo ${str/l/}   # delete the first character "l"
+
+ *************************
+
+ str='Hello World!'
+ 
+ echo ${str#H*o}   # delete the first character "H" and stop when you seed "o"
+  
+ *************************
+
+ str='Hello World!'
+ 
+ echo ${str##H*o}   # delete the first character "H" and stop when you seed the last character "o"
+
+ *************************
+
+ str='Hello World!'
+ 
+ echo "${str:0:5}  ${#str}"  # substitution: modify the world
+
+ *************************
+
+ str='Hello World!'
+ 
+ newStr="${str:0:4}i ${str:6}"  # substitution: modify the world
+ 
+ echo $newStr
+
+ *************************
+ //use %c: character; %s: chain of character; %d: integer; %f: float
+
+ name='Christ'
+ money=50 
+
+ printf "Hi, %s do you have %d€\n" $name $money
+
+ *************************
+ //Table
+ 
+ declare -a index_array=(12 5 20)	#table with index
+ readonly -a index_array=(12 5 [15]=10 20)	#readonly
+ declare -A assoc_array=(["lastname"]="KEM" ["firstname"]="Christ")	#table associative
+
+ for number in ${index_array[@]}
+ do
+     echo $number
+ done
+
+ index_array[15]=100
+
+ echo ${index_array[@]}
+ 
+ assoc_array[lastname]=KEMGA
+
+ echo ${assoc_array[lastname]}
+
+ echo ${!assoc_array[@]}	#Take all keys
+ echo ${assoc_array[@]}	#Take all values keys
+ echo ${#assoc_array[@]}	#Length table
+ assoc_array[age]=24
+ echo ${assoc_array[@]}	#add age in table
+ ************************
+ declare -a index_array1=(12 5 20)
+ readonly -a index_array2=(24 35 22)
+
+ unset index_array1[1]	#remove the penultimate
+
+ declare -a new_index_array=(17 ${index_array1[@]} 20)
+ 
+ echo ${new_index_array[@]}
+
+ unset new_index_array[1]	#remove the second element
+
+ echo ${new_index_array[@]}
+ 
+ ************************
+  //table bidimensional
+  # 1 5
+  # 9 4
+ 
+ declare -A bi_array=([0:0]=1 [0:1]=5 [1:0]=9 [1:1]=4)
+  
+ echo ${!bi_array[@]}
+ echo ${bi_array[@]}
+
+ ************************
+ //Function
+
+ declare -i age=25	#Global
+ 
+ question()
+ {
+   echo "How old are you? $age"
+ }
+ 
+ question
+
+ ************************
+ question()
+ {
+   local -i age=25	#Local
+
+   echo "How old are you? $age"
+ }
+ 
+ question
+
+************************
+ func()
+ {
+   #if condition A fail
+   	return 2
+   #end if
+
+   #if condition B fail
+   	return 3
+   #end if
+
+   return 0
+ }
+ 
+ func
+ echo $?
+
+************************
+ declare -F   #list all functions
+ 
+ declare -f    #show a single function
+
+ unset -f name_func   #delete name_func
+
+//Template
+***************Template: link***************
+-> code /home/Scripts/Template/link.sh --user-data-dir='.' --no-sandbox
+ >
+  readonly name=${1}
+  touch /home/Scripts/Template/${name}.sh
+  chmod 751 /home/Scripts/Template/${name}.sh
+  echo '#!/bin/bash' > /home/Scripts/Template/${name}.sh
+  readonly date=`date`
+  echo -e "<<comment!!!\n/************************************************************
+  ******* Author:         Christian KEMGANG NGUESSOP 
+  ******* Version:        1.0.0                         
+  ******* Created date:   ${date}        
+  ******* Modified date:     
+  *************************************************************/\ncomment!!!" >> /home/Scripts/Template/${name}.sh
+  echo '#************************** START **************************#\n' >> /home/Scripts/$file.sh
+  echo '\n#*************************** END ***************************#' >> /home/Scripts/$file.sh
+  ln -sv /home/Scripts/Template/${name}.sh /bin/${name}
+
+-> chmod 775 /home/Scripts/Template/link.sh
+-> rm -vrf /bin/lin
+-> ln -vs /home/Scripts/Template/link.sh /bin/lin
+
+-> lin createfile
+
+
+**********Template: create file .sh*************
+: '
+/************************************************************
+******* Author:    Christian KEMGANG NGUESSOP ***************
+******* Version:    1.0.0                     ***************
+*************************************************************/
+'
+#!/bin/bash
+read -p "Please provide filename you want to create: " file
+echo -e "Please purpose: \c"
+read -r purpose
+touch /home/Scripts/$file.sh
+chmod 755 /home/Scripts/$file.sh
+echo '#!/bin/bash' > /home/Scripts/$file.sh
+readonly date=`date`
+echo -e "'###'\n/************************************************************
+******* Author:         Christian KEMGANG NGUESSOP 
+******* Version:        1.0.0                    
+******* Purpose:        ${purpose}      
+******* Created date:   ${date}        
+******* Modified date:     
+*************************************************************/\n###" >> /home/Scripts/$file.sh
+echo '#************************** START **************************#\n' >> /home/Scripts/$file.sh
+echo '#*************************** END ***************************#' >> /home/Scripts/$file.sh
+
+-> chmod 750 /home/Scripts/Template
+-> chmod 751 /home/Scripts/Template/*
+-> ln -sv /home/Scripts/Template/createfile.sh /bin/createfile
+
+-> createfile
+

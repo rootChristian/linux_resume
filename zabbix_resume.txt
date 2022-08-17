@@ -1,0 +1,7 @@
+******************************************************
+***********************ZABBIX*************************
+******************************************************
+//install 
+-> setenforce permissive
+-> yum install zabbix-server-mysql zabbix-web-mysql zabbix-agent mariadb-server
+

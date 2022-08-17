@@ -1,0 +1,767 @@
+START GRAHICAL INTERFACE: -> sudo init 5
+START NO GRAHICAL INTERFACE: -> sudo init 3
+Graphical mode: -> systemctl set-default graphical.target
+Multi-user mode: -> systemctl set-default multi-user.target
+
+******************PASSWORD_LOST***********************
+Scegliere il modo recovery su UBUNTU:
+  - cambiare ro and rw e entrare sul system con il commando "e" per aggiungere alla riga
+    del sistema dove c'è il nome linux e la sua versione e aggiungere "single" or "1"
+
+Scegliere il modo recovery su CentOS:
+  - scaricare un driver iso di riparazione ad esempio systemrescue, gparted, drweb, ubcd
+  - agganciare il cd-rom iso nel sistema
+  - avviare il pc 
+  - startx
+  - montare il cd-rom
+  - mount /dev/sda1 /mnt   oppure    mount /dev/mapper/centos-root /mnt  (su alcuni sistemi centos)
+  - vi /mnt/etc/passwd
+  - vi /mnt/etc/shadow	(cancellare la password di root)
+  - init 0   oppure  reboot
+  - rimuovere il cd-rom
+
+RHEL7 gain access to root user interrupting boot process
+- press "e" to edit
+- nella riga del kernel aggiungere init=/bin/sh esempio: LANG=it_IT.UTF-8 rd.break console=tty1
+- press "ctrl-x"
+switch_root:/# mount	(mount all to readonly)
+switch_root:/# mount /sysroot
+switch_root:/# mount | grep sysroot	
+switch_root:/# mount -o remount, rw /sysroot	(mount all to read and write)
+switch_root:/# chroot /sysroot
+sh-4.2# passwd
+      > enter the new password root
+      > repeat the new password root
+sh-4.2# touch /.autorelabel	(to get access to the computer when the system reload automatic)
+sh-4.2# exit
+switch_root:/# exit
+
+
+// RECOVER ACCIDENTALLY DELETED FILES: https://youtu.be/mQGN-TWYG4k
+
+// LVM RECOVER ACCIDENTALLY DELETED LVM: https://youtu.be/y4t47-0G0U4
+
+
+******************************************************
+******************PROGETTAZIONE***********************
+******************************************************
+Per evitare che il systema si blocca per causa di risorse usato dall'utente,
+sarebbe importante montare la cartella home nel file system in una partizione separata con ogni singolo utente con la sua directory nella home e la stessa cosa per i logs (/var/log/);
+
+usare il commando -> partprobe /dev/sdb   per aggiornare la cartella delle partitione
+
+montare il nuovo disco in mnt: -> mount /dev/sdb1 /mnt/
+
+copiare in modo syncrono la cartella home in "mnt": rsync -arv /home/ /mtn/   (a: archivio senza cambiare i permessi; r: ricorsiva cioè anche le sotto cartelle; v: verbose cioè visualizzare l'elaborato)
+dopo: -> rm -rf /home/*    -> umount /mnt/	-> mount /dev/sdb1 /home/    -> vi /etc/fstab      :r ! blkid /dev/sdb1    > UUID="..." /home ext4 defaults 0 4   (dopo la quarta posizione)
+-> df -hT
+
+//stessa cosa per la i logs:
+-> mount /dev/sdb2 /mnt/
+-> cp -Ra /var/* /mnt/
+-> umount /mnt/ 
+-> vi /etc/fstab 
+ > UUID="..." /var ext4 defaults 0 5   (dopo la quinta posizione)
+-> mount -a  (monta all'avvio del sistema)
+-> df -hT
+
+******************************************************
+**********************COMMAND*************************
+******************************************************
+-> yum install -y bash-completion	(autocompletion on terminal)
+
+-> ctrl + r  (search the history list of commands for a pattern)
+
+-> ctrl + a  (jump to beginning of the command line)
+
+-> ctrl + e  (jump to the end of the command line)
+
+-> ctrl + u  (clear from the cursor to the beginning of the command line)
+
+-> ctrl + k  (clear from the cursor to the end of the command line)
+
+-> pwd	(show the path)
+
+-> echo $?	(result  last command executed. if 0 then "ok" else "error")
+
+-> sh -xv namescript 	(show the debut script)
+
+-> df -h or df -m
+
+-> du -sg *	(size directory)
+-> du -max | sort -nr | more	(a=alfanumeric; x=current directory; n= ; r=)
+
+-> su - nameuser 	(and take all the profile nameuser)
+-> su - 	(take profile current user)
+
+//command sed
+-> cp /etc/ssh/sshd_config /etc/ssh/sshd_config-old
+-> sed 's/#PermitRootLogin yes/PermitRootLogin yes/' /etc/ssh/sshd_config-old > /etc/ssh/sshd_config	(s: edit a test)
+-> mv /etc/ssh/sshd_config-old  /etc/ssh/sshd_config
+**************
+-> echo -e "http://hello.com\nHello Christian\nhow are you?\ni'm fine Christian and you? are you okay Christian?\nChristian?\nyes i'm fine and i'm okay; have a nice day Christian." > great.txt
+-> sed 's/Christian/Chantal/' great.txt    (change the first occurrence)
+-> sed 's/Christian/Chantal/2' great.txt    (change the second occurrence)
+-> sed 's/Christian/Chantal/g' great.txt    (change all occurrences)
+-> sed 's/Christian/Chantal/2g' great.txt    (change all second occurrences)
+-> sed 's/^\(christian?\)$/#\1/1' great.txt    (comment the line which start and end with Christian?)  
+-> sed 's/http:\/\//www./' great.txt    (change http:\\ to www.)
+-> sed '2 s/Christian/Chantal/' great.txt    (change the first occurrence in the second line)
+-> sed '1 d' great.txt    (delete the first line)
+
+
+//command awk
+-> ls -l > test
+-> cat test | awk '{print $3, $9}'  	(return the three and nine column)
+-> awk 'BEGIN {sum=0} {sum=sum+$7} END {print sum}' test	(return the sum of 7 column)
+-> awk '/root/ {print $0 }' /etc/passwd
+-> awk 'NR>=3 {print $0 }' /etc/passwd
+-> awk 'NR>=3 {print NR, $0 }' /etc/passwd
+
+-> vi /home/Scripts/sumAwk.sh
+*************
+#!/usr/bin/awk -f
+BEGING {sum=0}
+{sum=sum+$7}
+END {print sum}
+************
+-> awk -f /home/Scripts/sumAwk.sh test
+
+-> awk '{if($3=="root") print $0;}' test
+-> awk '{if($5==0) print $0;}' test
+
+//command vi
+
+
+-> w	(show users connected)
+-> tload	(form graphic to show system statistic every 5 min)
+ 
+-> ls	(list data inside the folder)
+
+-> ls -l	(list data and show all property of file or folder inside the folder)
+-> ls -alh	(with total size and data hidden)
+-> ls -liastr	(l: list; a: all; s: size; r: reverse; t: order; i: identified)
+
+-> mkdir /Desktop/Testing	(create the folder testing inside the desktop)	
+
+-> cd Desktop/	(change directory to go to the folder desktop)
+
+-> cd ..	(back to the precedent directory)
+
+-> echo "Hello world" >> Desktop/Testing/test.txt	(create file test.txt and write "hello word" inside)
+-> history > history.txt (create file history.txt and write the result history inside)
+
+-> less history.txt  or  -> view history.txt	(show and scroll inside the file history.txt)
+
+-> ls -alh | less  or  -> history | less(list data and show in command less)
+
+-> touch Testing/test.sh	(create the file script test.sh inside the folder Testing)
+
+r(4) + w(2) + x(1) = rwx(7)
+-> chmod 777 test.sh  or  -> chmod u+rwx,g-rwx,o-rwx test.sh	(give all privilege to test.sh)
+-> chmod 764 test.sh chmod u+rwx,g-rw-,o-r-- test.sh	(remove privilege file script test.sh to group(execute) and order(write and execute))
+
+//absolut path
+-> cp /home/admin/Desktop/Testing/test.sh  /home/admin/Desktop/	(copy a file script test.sh in desktop)
+//relative path
+-> cp test.sh ../.  or -> cp test.sh  Desktop/ (copy a file script test.sh in desktop)
+-> cp -r Testing/* .	(copy all file in actually directory)
+
+-> rm -rf ../*.txt	(delete all the file .txt in precedent folder. (-r)when the file is not empty. (-f) enforce deleted)
+-> rmdir Testing (delete the folder)
+
+-> mv test.txt text.txt	(rename file test.txt to text.txt)
+
+//create a link
+-> ln -s source_name new_source_name   (example: ln -s /home/admin/Desktop/Testing /home/admin/)  
+
+//color
+-> ls --color=none
+
+//il grep  (n: row number; i: upper and lower case; v: not contain) 
+-> grep "hello" test.txt	(return line which contain "hello")
+-> grep -n "Hello" test.txt	(return line and number which contain "Hello")
+->  "christ"		(return line and number which contain "christ" in upper or lower case)
+-> grep -ni "^hi" test.txt	(return line and number which start with "hi" in upper or lower case)
+-> grep "[0-9]$" test.txt	(return line which end with number[0-9])
+-> grep "2022$" test.txt	(return line which end with 2022)
+-> grep -v -n "bye" test.txt	(return line and number with not contain "bye")
+-> grep -c -i "hi" test.txt	(return number of line with contain "bye")
+-> grep -n "^$" test.txt        (return number of line empty)
+-> grep -i "Christ" *              (return names of files which contain "Christ")
+
+
+******************************************************
+**********************PROCESS*************************
+******************************************************
+r(run), s(sleep), d(dish sleep), t(stopped), z(zombie)
+
+-> top 	(list process in memory)
+	- f 	(to redefine a field)
+	- d or <space> 	(to cancel in display) 
+	- right 	(to select a process and change position)
+	- left 	(to save the new position)
+	- s 	(to save a new sort)
+	- q 	(to quit)
+-> ps 	(list the active process)
+-> ps -e 	(list all the process)
+-> ps -e | grep bash 	(grep to specify the name when you want)
+-> pidof bash	(get the pid of process)
+-> pidof nautilus
+-> kill -9 PID   or  -> kill -kill PID
+-> jobs	(lists process stopped)
+-> fg 1
+-> bg 1
+-> r (to renice a process)
+-> sudo nice -n -20 nautilus&
+-> renice -n 0 45055
+
+-> kill -l	(list signals)
+-> killall firefox	(kill all process runing)
+
+
+******************************************************
+**************ARCHITETTURA DEL SISTEMA****************
+******************************************************
+//Gli interrupts
+-> cat /proc/interrupts
+-> cat /proc/ioports
+-> cat /proc/dma
+-> lspci or -> lspci -t  (list all peripheral connected)
+-> ls /dev/sd?
+-> lsmod (show all drive connected)
+#
+-> rmmod pcspkr	(remove pcspkr in memory because the sistem don't stile use)
+
+-> insmod pcspkr	(add pcspkr in memory because i need to use)
+-> uname -r	(show version kernel)
+-> find /lib/modules/$(uname -r)/ -iname "*pcspkr*.ko"	(find the path pcspkr)
+-> insmod /lib/modules/3.10.0-1160.71.1.el7.x86_64/kernel/drivers/input/misc/pcspkr.ko.xz
+-> lsmod | grep pcs
+
+//****OR****//
+-> modprobe -r pcspkr	(remove pcspkr)
+-> modprobe pcspkr	(add pcspkr)
+
+-> ls /etc/mod*  (show configuration mod)
+-> mount |grep sys
+-> cd /sys/
+-> cd block
+->ls 
+-> ls -l sdb	(show the symbolic link)
+-> cd ../devices/pci0000:00/0000:00:10.0/host0/target0:0:1/0:0:1:0/block/sdb
+-> ls
+-> cat ro	(if return 1, It's read only)
+-> cat size	(show size of disk in byte)
+
+
+******************************************************
+**********************KERNEL**************************
+******************************************************
+//BOOT RUNLEVEL SINGLE USER
+- press "e" to edit
+- nella riga del kernel aggiungere 1 esempio: LANG=it_IT.UTF-8 1
+- press "ctrl-x" after enter the password root
+- [root@admin]# grep initdefault /etc/inittab
+- [root@admin]# cat /etc/inittab
+- [root@admin]# systemctl get-default
+- [root@admin]# systemctl set-default multi-user.target	(change a default target)
+- [root@admin]# reboot
+- [root@admin]# runlevel  or  who -r  (result: N 3)
+- [root@admin]# telinit 5   or  init 5  (change a runlevel with reboot system)
+- [root@admin]# cd /lib/systemd/system/
+- [root@admin]#ls -l runlevel*.target
+
+//IF THE SYSTEM FAIL
+- press "e" to edit
+- nella riga del kernel aggiungere init=/bin/sh esempio: LANG=it_IT.UTF-8 init=/bin/sh
+- press "ctrl-x"
+- sh-4.2# whoami  ("root")
+
+//BOOT RUNLEVEL GRAPHIC MODE
+- press "e" to edit
+- nella riga del kernel aggiungere 5 esempio: LANG=it_IT.UTF-8 5
+- press "ctrl-x"
+
+-> head /var/log/boot.log
+-> head -n 20 /var/log/boot.log
+-> tail -n 5 /var/log/boot.log
+-> tail -f /var/log/messages	(system log)
+-> tail -f /var/log/secure	(login log)
+-> less /var/log/boot.log
+-> dmesg	(log: read all kernel message register)
+-> cat /var/log/messages	(global log: to diagnostic)
+-> journalctl	(show all the log)
+-> journalctl -b	(show log for last boot)
+-> journalctl -b -r	(r=reverse order, b=last boot)
+-> journalctl --list-boots	(list all boots)
+-> journalctl -b 0	(show all the log with the specific boot; 0= last boot)
+-> journalctl --since="1 hour ago"
+-> journalctl --since="30 minutes ago"
+-> journalctl --since="2022-06-01" --until="2022-06-30"
+->cat /etc/passwd
+-> journalctl _UID=70	(show log for the specific user)
+-> journalctl -k  or -> journalctl --dmesg or -> dmesg	(show log kernel)
+-> journalctl --unit=ldconfig.service	(show log service)
+-> journalctl --unit=boot.mount	(show log partion)
+
+
+-> press "q" to exit
+
+
+******************************************************
+***************USERS AND GROUPS***********************
+******************************************************
+
+[root@chagest ~]# which usermod  && which useradd	(system administrator commands)
+/usr/sbin/usermod
+/usr/sbin/useradd
+
+[root@chagest ~]# which whoami		(user commands)
+/usr/bin/whoami
+
+/usr/local	(locally customized software)
+
+-> sudo -u Christ touch test.txt
+-> sudo useradd christ	(add user)
+-> less /etc/passwd	(list all users)
+-> sudo usermod -L Username  (lock user)  example: sudo usermod -L Christ
+-> sudo usermod -U Username  (unlock user)  example: sudo usermod -U Christ
+-> sudo usermod -l newUsername oldUsername  (modify user)  example: sudo usermod -l Christ christ	
+-> sudo usermod -c "User test n°1" -s /bin/bash Christ (-c: comment; -s: new shell "default: /bin/bash")
+-> sudo mkhomedir_helper Christ	(if the folder christ don't exit in "cd /home")
+-> sudo useradd -c "User test n°2" -s /bin/bash -m Test
+-> usermod -d /home/newHomeDir -m Test	(modify user home directory)
+-> ls -al /etc/skel	(list all in the default model to assign to the new user created)
+
+-> sudo less /etc/shadow	(list password)
+-> sudo passwd username	(assigned password to user; example: sudo passwd Test)
+-> su - Christ	(login to other user)
+
+-> vi /etc/sudoers
+ > Christ ALL=NOPASSWD: /bin/tail /var/log/secure		(get permition to Christ to use the command tail to view a secure log) 
+-> sudo /bin/tail /var/log/secure
+
+-> sudo usermod -aG developers admin  	(a: append; G: group supplement; g: primary group; add user admin to group developers)
+-> sudo gpasswd -d admin developers	(remove admin to group developers)
+
+-> sudo groupadd employees (add group: employees)
+
+-> sudo groupmod -n new_name old_name	(change group name)
+-> sudo groupmod -n testing formations	
+
+//Copy all elements to the new skel
+-> sudo cp -R /etc/skel /etc/skel-test
+-> sudo cp -R /etc/skel /etc/skel-empl
+-> sudo cp -R /etc/skel /etc/skel-mark
+
+//Create the file name in the skel
+-> touch /etc/skel-empl/employees.txt
+-> touch /etc/skel-mark/marketing.txt
+-> touch /etc/skel-dev/developers.txt
+ 
+// rename folder and file name
+-> mv old_dir new_dir (change name directory; example: mv TESTING DEVELOPERS)
+-> mv /etc/skel-test /etc/skel-dev
+-> mv /etc/skel-mark/administrators.txt /etc/skel-mark/marketing.txt
+-> mv /etc/skel-dev/testing.txt /etc/skel-dev/developers.txt
+
+//create new user and assign the group and home directory 
+-> sudo useradd -c "Christian KEMGANG" -s /bin/bash -m -g developers -k /etc/skel-dev/ -b /home/DEVELOPERS Christian	(m: move a user home directory to a new location; d: new directory; s: shell)
+-> sudo useradd -c "Christelle GUESSOP" -s /bin/bash -m -g employees -k /etc/skel-empl/ -b /home/EMPLOYEES Christelle
+-> sudo useradd -c "Maeva GUESSOP" -s /bin/bash -m -g marketing -k /etc/skel-mark/ -b /home/MARKETING Maeva
+
+//The following useradd command creates a new user named nathan with primary group users and secondary groups wheel and developers.
+-> sudo useradd -g users -G wheel,developers nathan
+
+-> sudo chown Christian MARKETING/Maeva/testing.txt   (change owner: assign testing.txt to Christian)
+-> sudo chgrp developers MARKETING/Maeva/testing.txt   (change group owner: assign testing.txt to group developers)
+
+
+//Deleting user and the mail box
+-> userdel -r  Christian
+-> groupdel -f christ (delete group)
+
+
+******************************************************
+*****************REDIRECT FLOW************************
+******************************************************
+>file	(redirect stdout to overwrite a file)
+>>file	(redirect stdout to append to a file)
+2>file	(redirect stderr to overwrite a file)
+2>/dev/null	(discard stderr error messages by redirecting to /dev/null)
+>file 2>&1	(redirect stdout and stderr to overwrite the same file)
+&>file	(redirect stdout and stderr to overwrite the same file)
+>>file 2>&1	(redirect stdout and stderr to append the same file)
+&>>file		(redirect stdout and stderr to append the same file)
+
+
+-> ls -al >> /dev/null
+
+-> cat testing.txt >> errors.log  2>&1
+
+-> cat testing.txt >> errors.log  2> /dev/null
+
+-> cat MARKETING/Maeva/marketing.txt >> MARKETING/Maeva/testing.txt 2>> MARKETING/Maeva/errors.log
+
+-> ls -l  >> marketing.txt | cat marketing.txt >> errors.log 2>&1
+
+-> ls -l MARKETING/Maeva/testing.txt >> MARKETING/Maeva/marketing.txt | cat MARKETING/Maeva/marketing.txt >> errors.log 2>&1
+
+-> cat < MARKETING/Maeva/marketing.txt
+
+-> cat /var/log/messages | wc -l	(return the total line count)
+
+->  ls -l /dev | tee list | less	(save the stdout ls in list and send the stdout list to less)
+
+-> tty	(get the current terminal)
+
+-> ls -l /dev | tee /dev/pts/1 > /dev/null	(redirect the stdout ls in terminal 1 and send the stdout ls to /dev/null)
+
+-> ls -l /dev | tee /dev/pts/1 | mailx test@localhost.com	(redirect the stdout ls in terminal 1 and send the stdout ls to mail test@localhost.com)
+
+
+//enter in the keyboard
+-> echo << END
+-> cat << END
+
+
+******************************************************
+*****************RESEARCH AND TRI*********************
+******************************************************
+-> whereis python	(return a path where is python)
+-> ls /var/lib/mlocate/
+-> locate python
+-> sudo updatedb	(upgrade mlocate.db with new file or folder created)
+
+-> find -name "errors.log"
+-> find / *.txt
+-> find -type d -iname "admin" (d: repertory; f: file)
+-> find . -iname "test.txt" (i:ignore case sensitive)
+-> find / -type d -name "logs"
+-> find /etc -name passwd
+-> find . -empty (return folder or file empty)
+-> find . -mmin -5 (return folder or file which has been modified since 5min)
+-> find . -mtime -48 (return folder or file which has been modified since 2 days)
+-> find . -size +1000k (return folder or file which exceeds 1000k)
+
+
+******************************************************
+*********ARCHIVE: MERGED AND COMPRESSED***************
+******************************************************
+//merged
+-> tar -cf archive.tar file1.txt file2.pdf file3.xml	(c: create; f: archive <<only used>>)
+-> tar -cvf archive.tar file1.txt file2.pdf file3.xml	(v: verbose;)
+-> tar -xf archive.tar	(x: extract)
+-> tar -tf archive.tar	(t: list files)
+-> tar -cf archive.tar	(c: create)
+
+//compressed
+-> zip archive.zip file1.txt file2.pdf file3.xml	(compress these files)
+-> zip archive.zip -0 file1.txt file2.pdf file3.xml	(o: min compression)
+-> zip archive.zip -9 file1.txt file2.pdf file3.xml	(9: max compression)
+
+-> zip archive.zip -Z bzip2 file1.txt file2.pdf file3.xml	(max compression)
+-> zip -T archive.zip	(verified integrity of file zip)
+
+-> zip archive.zip file.txt	(add file.txt inside the file archive.zip)
+-> zip -d archive.zip file.txt	(d: delete; remove file.txt inside the file archive.zip)
+
+-> zip -e archive.zip file1.txt file2.pdf file3.xml	(e: encrypt)
+-> unzip archive.zip	(decompress these files)
+
+
+-> rar a archive.rar file1.txt file2.pdf file3.xml	(compress these files)
+> rar -d archive.rar file.txt	(d: delete; remove file.txt inside the file archive.rar)
+-> rar T archive.rar	(list files)
+
+-> unrar x archive.rar	(decompress these files)
+
+-> tar -zcvf archive.gz file1.txt file2.pdf file3.xml	(z: gzip; merge and compress files)
+-> tar -jcvf archive.tar.bz2 file1.txt file2.pdf file3.xml	(j: bzip2; merge and compress files with minimal size)
+
+-> zcat archive.zip	(to read the file inside the zip)
+
+
+******************************************************
+**************DISK-PARTITION-STORAGE******************
+******************************************************
+In one disk we have max 4 partition	(m: menu help; n: create; t: change type of partition)
+Step: partition > formater > mount
+The different formats: mke2fs (ext2); mkreiserfs (ReiserFS); mkfs.ext4 (ext4)
+example: mkfs.ext4 /dev/sda3
+
+-> sudo fdisk -l  or   parted -l	(list all disk)
+-> cat /etc/fstab	(list where the system mounted)
+-> blkid	(list all disk with unique identify)
+-> cat /etc/mtab	(list all mount)
+
+-> sudo mkdir /media/disco
+-> mount /dev/sda3 /media/disco/	(mount disk sda3 in folder disco)
+-> sudo umount /dev/sda3	(umount disk sda3)
+
+-> du name_folder	(get statistic folder; example: du DEVELOPERS)
+-> du -a name_file		(get statistic file; example: du -a DEVELOPERS/Christian/developers.txt)
+-> du -sh name_folder   (s: summer;  h:read all)
+
+// install package to format the disk: -> sudo apt-get install exfat-fuse exfat-utils
+-> sudo mkfs.exfat /dev/sdb1	(format disk; vfat, exfat: windows; ext3, ext4: linux)
+-> sudo mkfs.exfat -n "virus" /dev/sdb1	(n: assigned the name)
+-> sudo mkfs.vfat -F 32 -n "virus" /dev/sdb1	(F: format for small disk)
+
+// Pratical example: create 2 partitons primary with 15G and 1 extended with 20G which contain 2 logical drives with 10G
+-> sudo fdisk -l	(list all disk)
+-> sudo fdisk -l /dev/sdb	(list all partition sdb)
+-> sudo fdisk /dev/sdb	(select a disk)
+ > n		(add new partition)
+ > p		(primary)
+ > 1		(first partition default)
+ > 2048		(first sector)
+ > +15G		(second sector)
+
+ > n		(add new partition)
+ > p		(primary)
+ > 2		(second partition)
+ > 31459328	(first sector)
+ > +15G		(second sector)
+
+ > n		(add new partition)
+ > e		(extended)
+ > 3		(first partition default)
+ > 62916608	(first sector)
+ > +20G		(second sector)
+ > p		(print all partition)
+
+ > n		(add new partition)
+ > l		(logical partition 5)
+ > 62918656	(first sector)
+ > +10G		(last sector)
+
+ > n		(add new partition)
+ > l		(logical partition 6)
+ > 83892224	(second sector)
+ > +10G		(last sector)
+
+ > p		(print all partition)
+
+ > w	(to write modification)    OR    > q   (to don't save modification)
+
+-> sudo mkfs.ext4 /dev/sdb1		(format the partition sdb1)
+-> sudo mkdir /mnt/data			(create directory data)
+-> sudo mount /dev/sdb1 /mnt/data	(mount partition sdb1 in data)
+-> sudo umount /dev/sdb1		(umount disk sda1)
+
+
+******************************************************
+**********************PACKAGE*************************
+******************************************************
+https://www.cyberciti.biz/faq/installing-rhel-epel-repo-on-centos-redhat-7-x/
+https://www.cyberciti.biz/faq/rhel-centos-fedora-linux-yum-command-howto/
+
+Install epel using the following command: -> sudo yum -y install epel-release
+Refresh repo by typing the following commad: -> sudo yum repolist
+Install the dpkg rpm packages: -> sudo yum install dpkg-devel dpkg-dev
+
+
+Install apt-get: -> curl https://raw.githubusercontent.com/dvershinin/apt-get-centos/master/apt-get.sh -o /usr/local/bin/apt-get
+-> chmod 0755 /usr/local/bin/apt-get
+-> sudo rm -rf /usr/local/bin/apt-get
+
+-> dpkg (command apt; debian: .deb) or rpm (command yum; rethat: .rpm) or pkg (MaxOs)
+-> yum check-update
+-> sudo yum -y update  && sudo yum -y upgrade
+-> sudo yum makecache
+-> sudo yum -y install dnf
+-> yum search {package-name}
+-> yum info {pkg-1} {pkg-2}
+-> yum remove {package-name-1} {package-name-2}
+-> yum autoremove
+
+-> sudo dnf remove dpkg   or   -> sudo dnf remove dnf
+-> sudo dpkg -i /home/admin/Downloads/discord-ptb-0.0.31.deb
+-> sudo apt-get -f install
+
+-> cat /etc/apt/sources.list	(list all links dependencies)
+
+-> sudo vi /etc/apt/sources.list	(modify dependency)
+
+-> sudo apt-get update
+
+-> sudo apt-get upgrade	(upgrade package and dependency)
+-> sudo apt-get dist-upgrade	(upgrade package and dependency: eventually new package)
+
+-> sudo apt-get source vlc 
+
+-> sudo apt-get remove vlc	(delete package)
+-> sudo apt-get autoremove vlc	(delete package and dependency)
+
+-> sudo apt-get purge vlc	(delete package and configuration file)
+-> sudo apt-get autoremove --purge vlc	(delete package and dependency and configuration file)
+
+-> whereis vlc
+
+
+******************************************************
+********************TASK PLANNING*********************
+******************************************************
+-> %A or %a    (day in letter - complet or abbreviation)
+-> %B or %b    (month in letter - complet or abbreviation)
+-> %d	(number of day beetwen 01 and 31)
+-> %m	(number of month beetwen 01 and 12)
+-> %Y or %y	(number of year; example: 2019 or 19)
+-> %H	(hour 00 and 23)
+-> %M	(minute 00 and 59)
+-> %S	(second 00 and 59)
+
+//shortcut
+%F <=> %Y-%m-%d
+%T <=> %H:%M:%S
+
+-> date "+We are %A"  or   -> date "+%F %T"
+
+-> sudo date mmddHHMMYY	(modify date of system)
+
+-> date -d "+2 years"	(d: calculate a date future)
+
+-> at 15:12  or  -> at now+2 day   or   -> at 15:00 tomorow
+ > rm -rm /home/file.txt
+ > ctrl + d
+-> atq	(list task planning)
+-> atrm id_task   (delete task planning)
+
+-> df -hT  (information filesystem; T: type of file system)
+
+-> shutdown -H (H: halt)
+-> shutdown -P (P: poweroff)
+-> shutdown -r (r: reboot)
+-> shutdown -k	(k: just send warnings but don't reboot a system)
+-> shutdown -r 20:00 "The server will shutdown at 20:00"   (planning the shutdown and alert users at -15min)
+-> shutdown -c	(c: cancel a pending shutdown)
+
+-> wall "sms personalize $(date)"  or  wall "today is $(date +%d/%m/%y)"   (alert all users with the message personalized)
+
+-> ls -l /etc/cron.*
+-> cron (crontab: file edit)
+-> crontab -e  (e: edit)
+ > # minute(0-59) hour(0-23) day_of_month(1-31) month(1-12) day_of_week(0-7, 0 or 7 is sunday) command
+ > 00 20 * * * mkdir testing && echo "new script" >> /root/testing/test.txt
+-> vi /etc/crontab
+-> 30 00 1 * * root /home/Scripts/backup.sh  (every first month at 00h30min lunch a backup.sh)
+32 14 * * * ./home/Scripts/backup.sh
+-> crontab -l 	(list task planning)
+-> crontab -r 	(remove task planning)
+-> service cron restart   (in centos isn't important use this command)
+**********************************************************************
+SHELL=/bin/bash
+PATH=/sbin:/bin:/usr/sbin:/usr/bin:/usr/local/sbin:/usr/local/bin
+MAILTO=root
+
+# Example of job definition:
+# .---------------- minute (0 - 59)
+# |  .------------- hour (0 - 23)
+# |  |  .---------- day of month (1 - 31)
+# |  |  |  .------- month (1 - 12) OR jan,feb,mar,apr ...
+# |  |  |  |  .---- day of week (0 - 6) (Sunday=0 or 7) OR sun,mon,tue,wed,thu,fri,sat
+# |  |  |  |  |
+# *  *  *  *  * user-name  command to be executed
+
+# Lunch backup every day at 00h00min and save a log in backup.log
+00 00 * * * /home/Scripts/backup.sh > /var/log/backup.log
+**********************************************************************
+-> cat /var/log/cron | grep -i backup     (i: to ignore a case sensitive; verify a log if the command backup was loaded)
+
+//Send email   ???????
+-> yum -y install postfix mailx cyrus-sasl cyrus-sasl-plain
+-> yum autoremove postfix mailx cyrus-sasl cyrus-sasl-plain	(remove all)
+-> cp /etc/postfix/main.cf /etc/postfix/main_restore.cf
+-> echo -e "myhostname = chagest.com\nalias_maps = hash:/etc/aliases\nalias_database = hash:/etc/aliases\nmyorigin = /etc/mailname\nmydestination = localhost.chagest.com, ,localhost\nmynetworks = 127.0.0.0/8 [::ffff:127.0.0.0]/104 [::1]/128\nmailbox_size_limit = 0\nrecipient_delimiter = +\ninet_interfaces = all\ninet_protocols = all\nrelayhost = [smtp.gmail.com]:587\n# Enables SASL authentication for postfix\nsmtp_sasl_auth_enable = yes\n# Disallow methods that allow anonymous authentication\nsmtp_sasl_security_options = noanonymous\n# Location of sasl_passwd we saved\nsmtp_sasl_password_maps = hash:/etc/postfix/sasl/sasl_passwd\n# Enable STARTTLS encryption for SMTP\nsmtp_tls_security_level = encrypt\n# Location of CA certificates for TLS\nsmtp_tls_CAfile = /etc/ssl/certs/ca-bundle.crt\n" > /etc/postfix/main.cf
+-> vi /etc/postfix/sasl_passwd
+ > [smtp.gmail.com]:587 email:password
+-> chmod 600 /etc/postfix/sasl_passwd
+-> postmap /etc/postfix/sasl_passwd	(set the credential in postfix)
+-> service postfix restart
+-> systemctl restart postfix.service	(restart a service postfix)
+
+-> echo -e "Ciao Christian!\nTest Postfix Gmail SMTP..." | mail -s "Postfix Gmail SMTP" softwarechristian1@gmail.com
+
+-> tailf /var/log/maillog
+search localdomain
+nameserver 192.168.159.2
+
+******************************************************
+***********************NETWORK************************
+******************************************************
+-> wget http://centos.mirror.server24.net/7.9.2009/isos/x86_64/CentOS-7-x86_64-DVD-2009.iso  	(download file iso)
+
+-> cat /etc/hostname	(show hostname)
+
+-> hostname	(get hostname)
+-> host chagest.com	(have information: ip address)
+
+-> whois chagest.com	(to have more information)
+
+-> cat /etc/hosts	(list hosts)
+
+-> echo "142.250.184.110 localhost" >> /etc/hosts	(block specific ip)
+
+//change hostname
+[root@localhost /]# hostname
+localhost.localdomain
+[root@localhost /]# hostname -f
+localhost
+
+-> cp -p /etc/hostname /etc/hostname_restore	(p: not change owner privilige)
+-> vi /etc/hostname
+ > chagest.com
+-> cp /etc/hosts /etc/hosts_restore
+-> vi /etc/hosts
+ > 127.0.0.1   chagest.com 
+ > ::1         chagest.com
+-> reboot
+
+[root@localhost /]# hostname
+chagest.com
+[root@localhost /]# hostname -f
+chagest.com
+
+//manual configuration
+-> ifconfig -a
+-> nslookup	(in the physical machine)
+-> netstat -nr
+-> cd /etc/sysconfig/network-scripts/
+-> vi ifcfg-ens33
+ > BOOTPROTO="none"
+ > IPADDR="192.168.159.158 "
+ > NETMASK="255.255.255.0"
+ > GATEWAY="192.168.159.2"
+ > DOMAIN="chagest.local"
+ > DEVICE=ens33
+ > HWADDR="00:0c:29:8b:78:6c"
+ > ONBOOT=yes
+ > PEERDNS=yes
+ > PEERROUTES=yes
+ > DEFROUTE=yes
+ > MTU=1500
+ > IPV6INIT=no
+ > IPV6_AUTOCONF=no
+ > IPV6_DEFROUTE=no
+ > IPV6_PEERDNS=no
+ > IPV6_PEERROUTES=no
+ > ETHTOOL_OPTS="-G ${DEVICE} rx-mini 0"
+-> reboot
+-> ifconfig ens33 down
+-> ifconfig ens33 up
+
+
+******************************************************
+***************CONFIGURATION NETPLAN******************
+******************************************************
+-> ps -auxw	(PID 1 systemd: initializing system)
+
+-> uname -a	(get information distribution)
+
+-> network-manager	(graphical configuration network)
+-> sudo yum remove ifupdown  or sudo apt remove ifupdown
+-> sudo yum remove resolvconf or sudo apt remove resolvconf
+
+-> cat cat /etc/networks	(file configuration)
