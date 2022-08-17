@@ -1,0 +1,20 @@
+******************************************************
+******************WEBLOGIC SERVER*********************
+******************************************************
+Admin Console
+=
+Admin Server ( config.xml):
+	- inside we have Managed Servers
+
+-> vi nodemanager.properties
+-> cat nodemanager.domains
+-> ls -ltr
+-> vi nodemanager.log
+
+
+//Domain organization
+WLS (have multiple domains from a single installation)
+
+
+
+
