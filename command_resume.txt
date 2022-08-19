@@ -68,6 +68,10 @@ dopo: -> rm -rf /home/*    -> umount /mnt/	-> mount /dev/sdb1 /home/    -> vi /e
 ******************************************************
 **********************COMMAND*************************
 ******************************************************
+-> uptime   (get time when the sytem start and number user connected)
+
+->  cat /etc/os-release	  or  -> hostnamectl	(information os linux)
+
 -> yum install -y bash-completion	(autocompletion on terminal)
 
 -> ctrl + r  (search the history list of commands for a pattern)
@@ -439,6 +443,7 @@ r(run), s(sleep), d(dish sleep), t(stopped), z(zombie)
 -> find -type d -iname "admin" (d: repertory; f: file)
 -> find . -iname "test.txt" (i:ignore case sensitive)
 -> find / -type d -name "logs"
+-> find / -type f -name "*.conf" | grep "zabbix_server.conf"
 -> find /etc -name passwd
 -> find . -empty (return folder or file empty)
 -> find . -mmin -5 (return folder or file which has been modified since 5min)

@@ -49,6 +49,13 @@ reject	(with message)
 -> ssh root@192.168.159.153	(connection remote; default port: 22)
 
 //firewall
+-> rpm -qa firewalld
+-> yum install firewalld
+-> systemctl unmask --now firewalld
+-> systemctl enable firewalld
+-> systemctl start firewalld
+-> systemctl status firewalld
+
 -> cd /usr/lib/firwalld	(go to directory default configuration)
 -> firewall-cmd --list-all	(list all services actives with details)
 -> firewall-cmd --list-services	(list services actives)
@@ -63,8 +70,10 @@ reject	(with message)
 -> firewall-cmd --remove-port=22/tcp	(remove port 22/tcp)
 
 -> firewall-cmd --runtime-to-permanent	(to save permanent configuration)
--> firewall-cmd --add-service=http --permanent	(add service http in mode permanent)
+-> firewall-cmd --add-service={http,https} --permanent	(add service http in mode permanent)
+-> firewall-cmd --add-port={10051/tcp,10050/tcp} --permanent
 -> firewall-cmd --reload	(reload the permanent configuration)
+-> systemctl restart httpd
 -> cd /etc/firewalld/
 -> cat zones/public.xml	(see the configuration services)
 -> systemctl status firewalld.service		(check the status firewalld service)
