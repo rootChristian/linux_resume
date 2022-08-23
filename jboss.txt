@@ -1,0 +1,24 @@
+******************************************************
+************************JBOSS*************************
+******************************************************
+
+-> echo "export JAVA_HOME=/usr/lib/jvm/jre-1.8.0-openjdk-1.8.0.342.b07-1.el7_9.x86_64" >> /etc/profile
+-> source /etc/profile
+-> echo $JAVA_HOME
+-> env | grep JAVA_HOME
+-> java -jar jboss-eap-7.4.0-installer.jar   or  -> java -jar jboss-eap-7.4.0-installer.jar -console
+
+
+-> useradd -r -d /opt/jboss -s /sbin/nologin jboss
+
+-> unzip /home/admin/Downloads/jboss-as-7.1.1.Final.zip
+-> mv jboss-as-7.1.1.Final /opt/jboss
+
+-> chown -RH jboss:jboss /opt/jboss
+-> mkdir /etc/jboss
+
+-> cd /opt/jboss/
+
+-> cp /
+-> mv /root/jboss-eap-7.4.0-installer.jar /jboss/jar/
+-> tar xf /jboss/jar/jboss-eap-7.4.0-installer.jar /jboss/jar/
