@@ -1,0 +1,35 @@
+**************SSH**************
+
+Generate public and private key:
+- ssh-keygen -t rsa -b 4096 -C "Partech centos7"
+
+Create directory .ssh in virtual machine:
+- mkdir /home/admin/.ssh
+
+Copy file to virtual machine:
+- scp C:\Users\Christian/.ssh/id_rsa.pub admin@192.168.159.158:/home/admin/.ssh/pub_key.pub
+
+Copy file pub_key in authorized_keys:
+- cat ~/.ssh/pub_key.pub >> ~/.ssh/authorized_keys
+
+Change privilege ssh:
+- chmod 700 ~/.ssh/	- chmod 600 ~/.ssh/*
+
+Save the default configuration:
+- sudo cp /etc/ssh/sshd_config /etc/ssh/sshd_config_bck_20220904
+
+- sudo vi /etc/ssh/sshd_config
+	> PermitRootLogin prohibit-password
+	> StrictModes yes:
+	> PermitEmptyPasswords no
+	> PasswordAuthentication no
+- sudo systemctl restart sshd
+
+- sudo cp ~/.ssh/authorized_keys /home/DEVELOPERS/Christian/.ssh/
+
+- sudo chown Christian:developers /home/DEVELOPERS/Christian/.ssh/authorized_keys
+
+Practical:
+- ssh admin@192.168.178.158
+
+- ssh Christian@192.168.178.158
