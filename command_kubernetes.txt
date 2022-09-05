@@ -1,0 +1,54 @@
+**************KUBERNETES**************
+
+Create a pod:
+- kubectl run www --image nginx:1.16
+
+Get pods
+- kubectl get pods
+
+Simulate a creation pod:
+- kubectl run db --image=mongo:4.2 --dry-run=client -o yaml
+
+//Services
+Service ClusterIP
+Example:
+- vi pod.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+	name: vote
+	labels:
+		app: vote
+spec:
+	containers:
+	- name: vote
+	  image: instavote/vote
+
+- kubectl apply -f pod.yaml
+****************
+- vi svc.yaml
+apiVersion: v1
+kind: Service
+metadata:
+	name: vote
+spec:
+	selector:
+		app: vote
+	type: ClusterIP
+	ports:
+	- port: 80
+	  targetPort: 80
+
+- kubectl apply -f svc.yaml
+****************
+- kubectl get pod, svc
+****************
+Access inside the cluster
+- kubectl run debug -ti --image=alpine
+	# apk add -u curl
+	# curl http://vote
+****************
+Access outside the cluster
+- kubectl port-forward svc/vote 8080:80
+- localhost:8080
+
