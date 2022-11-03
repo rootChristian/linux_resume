@@ -351,6 +351,12 @@ r(run), s(sleep), d(dish sleep), t(stopped), z(zombie)
 
 -> sudo groupadd employees (add group: employees)
 
+-> sudo chage -l  name_user ( l: details user password)
+-> sudo chage -M 90  name_user ( M: maximum user password over 90 days)
+-> sudo chage -d 0  name_user ( d: force user to change their password at the first login)
+-> define the expiry date:
+   date -d "+180 days" +%F
+   chage -E new_date name_user
 -> sudo groupmod -n new_name old_name	(change group name)
 -> sudo groupmod -n testing formations	
 
