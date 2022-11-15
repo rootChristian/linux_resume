@@ -64,6 +64,60 @@ dopo: -> rm -rf /home/*    -> umount /mnt/	-> mount /dev/sdb1 /home/    -> vi /e
  > UUID="..." /var ext4 defaults 0 5   (dopo la quinta posizione)
 -> mount -a  (monta all'avvio del sistema)
 -> df -hT
+*****************************************
+Connectez-vous à la machine servera en tant qu'utilisateur student et basculez vers l'utilisateur root.
+
+[student@workstation ~]$ ssh student@servera
+...output omitted...
+[student@servera ~]$ sudo -i
+[sudo] password for student: student
+[root@servera ~]#
+Une nouvelle partition dotée d'un système de fichiers a été ajoutée au disque /dev/vdb sur la machine servera. Montez la partition nouvellement disponible en utilisant l'UUID au point de montage /mnt/part1.
+
+Créez le répertoire /mnt/part1.
+
+[root@servera ~]# mkdir /mnt/part1
+Interrogez l'UUID du périphérique /dev/vdb1.
+
+[root@servera ~]# lsblk -fp /dev/vdb
+NAME        FSTYPE LABEL UUID                                 MOUNTPOINT
+/dev/vdb
+└─/dev/vdb1 xfs          a04c511a-b805-4ec2-981f-42d190fc9a65
+Montez le système de fichiers en utilisant l'UUID sur le répertoire /mnt/part1. Utilisez l'UUID /﻿dev/﻿vdb1 de la sortie de la commande précédente.
+
+[root@servera ~]# mount \
+UUID="a04c511a-b805-4ec2-981f-42d190fc9a65" /mnt/part1
+Vérifiez que le périphérique /dev/vdb1 est monté sur le répertoire /mnt/part1.
+
+[root@servera ~]# lsblk -fp /dev/vdb
+NAME        FSTYPE LABEL UUID                                 MOUNTPOINT
+/dev/vdb
+└─/dev/vdb1 xfs          a04c511a-b805-4ec2-981f-42d190fc9a65 /mnt/part1
+Accédez au répertoire /mnt/part1 et créez le sous-répertoire testdir. Créez le fichier /﻿mnt/﻿part1/testdir/newmount.
+
+Choisissez le répertoire /mnt/part1.
+
+[root@servera ~]# cd /mnt/part1
+Créez le répertoire /mnt/part1/testdir.
+
+[root@servera part1]# mkdir testdir
+Créez le fichier /mnt/part1/testdir/newmount.
+
+[root@servera part1]# touch testdir/newmount
+Démontez le système de fichiers monté dans le répertoire /mnt/part1.
+
+Démontez le répertoire /mnt/part1 pendant que le shell se trouve dans le répertoire /mnt/part1. La commande umount ne parvient pas à démonter le périphérique.
+
+[root@servera part1]# umount /mnt/part1
+umount: /mnt/part1: target is busy.
+Remplacez le répertoire actif dans le shell par le répertoire /root.
+
+[root@servera part1]# cd
+[root@servera ~]#
+Démontez le répertoire /mnt/part1.
+
+[root@servera ~]# umount /mnt/part1
+*****************************************
 
 ******************************************************
 **********************COMMAND*************************
