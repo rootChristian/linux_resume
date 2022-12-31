@@ -30,6 +30,6 @@ Save the default configuration:
 - sudo chown Christian:developers /home/DEVELOPERS/Christian/.ssh/authorized_keys
 
 Practical:
-- ssh admin@192.168.178.158
+- ssh admin@192.168.0.0
 
-- ssh Christian@192.168.178.158
+- ssh Christian@192.168.0.0
